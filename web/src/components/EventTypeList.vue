@@ -21,7 +21,7 @@ const fetchEventTypes = async () => {
         },
       },
     });
-    data.value = response.data?.data;
+    data.value = [{name: "all"},...response.data?.data];
     error = undefined;
   } catch (err) {
     console.error("Error fetching event types:", err);

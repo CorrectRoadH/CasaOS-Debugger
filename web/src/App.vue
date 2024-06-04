@@ -19,7 +19,7 @@ import SourceList from './components/SourceList.vue';
     </div>
 
     
-    <div class="w-11/12 bg-gray-300 rounded-lg overflow-hidden p-2">
+    <div class="w-11/12 bg-gray-300 rounded-lg  p-2">
       <Suspense> 
         <HomeView />
       </Suspense>  
