@@ -1,0 +1,251 @@
+openapi: 3.0.3
+
+info:
+  title: CasaOS Debugger API
+  version: v2
+
+servers:
+  - url: /v2/debugger
+
+tags:
+  - name: Common methods
+    description: |-
+      methods for common usage
+
+  - name: Web methods
+    description: |-
+      methods for web interface (INTERNAL USE ONLY)
+
+  - name: Module Info
+    description: |-
+      <SchemaDefinition schemaRef="#/components/schemas/module" />
+    
+x-tagGroups:
+  - name: Methods
+    tags:
+      - Common methods
+      - Web methods
+
+  - name: Schemas
+    tags:
+      - Module Info
+
+security:
+  - access_token: []
+
+paths:
+  /:
+    get:
+      summary: Get information about the host
+      operationId: HelloWorld
+      tags:
+        - Common methods
+      responses:
+        "200":
+          $ref: "#/components/responses/response_ok"
+        "500":
+          $ref: "#/components/responses/response_internal_server_error"
+  
+  /sources:
+    get:
+      summary: Get all sources
+      operationId: GetAllSources
+      tags:
+        - Common methods
+      responses:
+        "200":
+          $ref: "#/components/responses/response_get_source_list_ok"
+        "500":
+          $ref: "#/components/responses/response_internal_server_error"
+ 
+  /events:
+    get:
+      summary: Query messages
+      operationId: GetAllMessages
+      parameters:
+        - name: sourceId
+          in: query
+          required: false
+          schema:
+            type: string
+          example: "casaos"
+        - name: eventType
+          in: query
+          required: false
+          schema:
+            type: string
+          example: "app:install"
+        - name: offset
+          in: query
+          required: true
+          schema:
+            type: integer
+          example: 0
+        - name: length
+          in: query
+          required: true
+          schema:
+            type: integer
+          example: 10
+      responses:
+        "200":
+          $ref: "#/components/responses/response_query_message_ok"
+        "500":
+          $ref: "#/components/responses/response_internal_server_error"
+
+  /events/types:
+    get:
+      summary: return event type list by sourceId
+      parameters:
+        - name: sourceId
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "847d7fde"
+      operationId: GetAllEventType
+      responses:
+        "200":
+          $ref: "#/components/responses/response_get_event_type_list_ok"
+        "500":
+          $ref: "#/components/responses/response_internal_server_error"
+
+components:
+  securitySchemes:
+    access_token:
+      type: apiKey
+      in: header
+      name: Authorization
+
+  parameters:
+    name:
+      name: name
+      in: path
+      required: true
+      schema:
+        type: string
+        example: "847d7fde"
+
+  responses:
+    response_ok:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/base_response"
+          example:
+            message: "OK"
+      x-go-name: ResponseOK
+
+    response_conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/base_response"
+          example:
+            message: "Conflict"
+
+    response_internal_server_error:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/base_response"
+          example:
+            message: "Internal Server Error"
+
+    response_not_found:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/base_response"
+          example:
+            message: "Not Found"
+
+    response_bad_request:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/base_response"
+          example:
+            message: "Bad Request"
+    
+    response_unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/base_response"
+          example:
+            message: "Unauthorized"
+
+    response_get_source_list_ok:
+      description: OK
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/base_response"
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/sourceID"
+
+    response_get_event_type_list_ok:
+      description: OK
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/base_response"
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EventType"
+
+    response_query_message_ok:
+      description: OK
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/base_response"
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Event"
+
+  schemas:
+    base_response: # Every response should inherit from BaseResponse
+      properties:
+        message:
+          description: message returned by server side if there is any
+          type: string
+
+    sourceID:
+      type: string
+    
+    EventType:
+      type: object
+      description: Event Type
+      x-go-type: message_bus.EventType
+      x-go-type-import:
+        name: message_bus
+        path: github.com/CorrectRoadH/CasaOS-Debugger/codegen/message_bus
+
+    Event:
+      type: object
+      description: Event
+      x-go-type: message_bus.Event
+      x-go-type-import:
+        name: message_bus
+        path: github.com/CorrectRoadH/CasaOS-Debugger/codegen/message_bus
