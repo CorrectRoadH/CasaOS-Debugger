@@ -11,26 +11,24 @@ import (
 
 	"github.com/CorrectRoadH/CasaOS-Debugger/codegen"
 	"github.com/CorrectRoadH/CasaOS-Debugger/codegen/message_bus"
+	"github.com/IceWhaleTech/CasaOS-Common/utils/logger"
 	"github.com/googollee/go-socket.io/engineio"
 	"github.com/googollee/go-socket.io/engineio/transport"
 	"github.com/googollee/go-socket.io/engineio/transport/polling"
 	"github.com/googollee/go-socket.io/engineio/transport/websocket"
 	"github.com/googollee/go-socket.io/parser"
 	"github.com/samber/lo"
-
-	mapset "github.com/deckarep/golang-set/v2"
+	"go.uber.org/zap"
 )
 
 type MessageBusService struct {
-	record         bool
-	messageHistory []message_bus.Event
-	eventTypeList  []message_bus.EventType
+	record        bool
+	eventTypeList []message_bus.EventType
 }
 
 func NewMessageBusService() *MessageBusService {
 	s := &MessageBusService{
-		record:         false,
-		messageHistory: []message_bus.Event{},
+		record: false,
 	}
 	return s
 }
@@ -130,46 +128,42 @@ func (s *MessageBusService) StartRecord() {
 
 			if _, ok := rawEvent["Timestamp"]; ok {
 				rawTimestamp := rawEvent["Timestamp"].(float64)
-				timestamp, err := time.Parse(time.RFC3339, fmt.Sprintf("%f", rawTimestamp))
-				if err == nil {
+				timestamp, cerr := time.Parse(time.RFC3339, fmt.Sprintf("%f", rawTimestamp))
+				if cerr == nil {
 					event.Timestamp = lo.ToPtr(timestamp)
 				}
 			}
 
-			// fmt.Println(string(output))
-			s.messageHistory = append(s.messageHistory, event)
+			err = MyService.DBService().InsertEvent(*event.Uuid, event.Properties, event.SourceID, event.Name, event.Timestamp)
+			if err != nil {
+				logger.Error("InsertEvent error: ", zap.Error(err))
+			}
 		}
 	}
 }
 
 func (s *MessageBusService) MessageHistory(sourceID *string, name *string, offset int, length int) ([]message_bus.Event, error) {
 	var result []message_bus.Event
-	if sourceID != nil {
-		result = lo.Filter(s.messageHistory, func(event message_bus.Event, _ int) bool {
-			return event.SourceID == *sourceID
-		})
-	}
-	if name != nil {
-		result = lo.Filter(result, func(event message_bus.Event, _ int) bool {
-			return event.Name == *name
-		})
-	}
 	if offset < 0 {
 		offset = 0
 	}
 	if length < 0 {
 		length = 0
 	}
-	if offset+length > len(result) {
-		length = len(result) - offset
+
+	result, err := MyService.DBService().QueryEvent(name, sourceID, offset, length)
+	if err != nil {
+		return nil, err
 	}
-	return result[offset : offset+length], nil
+	return result, nil
 }
 
 func (s *MessageBusService) Sources() ([]codegen.SourceID, error) {
-	sourceSet := mapset.NewSet[string]()
-	for _, event := range s.messageHistory {
-		sourceSet.Add(event.SourceID)
+	sourceList, err := MyService.DBService().SourceList()
+	if err != nil {
+		return nil, err
 	}
-	return sourceSet.ToSlice(), nil
+	return lo.Map(sourceList, func(sourceID string, _ int) codegen.SourceID {
+		return codegen.SourceID(sourceID)
+	}), nil
 }

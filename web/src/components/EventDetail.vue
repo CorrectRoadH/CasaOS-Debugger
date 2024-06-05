@@ -16,8 +16,17 @@ const propObjKeys = Object.keys(props.event.properties);
 
 <template>
     <div class="flex flex-col w-full bg-gray-200 p-2 rounded-lg">
-        <div>{{props.event.name}}</div>
-        <div>{{props.event.uuid}}</div>
+        <div class="flex gap-2">
+            <div>{{props.event.name}}</div>
+            <div>
+                时间: No Time
+            </div>
+            <div class="flex gap-2">
+                UUID: <div>{{props.event.uuid}}</div>
+            </div>
+
+    
+        </div>
 
         <div v-for="key in propObjKeys" :key="key">
             <div class="flex gap-2">

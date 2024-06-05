@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// import Button from 'primevue/button';
+
 import EventTypeList from "@/components/EventTypeList.vue"
 import EventTypeDetail from "@/components/EventTypeDetail.vue";
 import EventHistory from "@/components/EventHistory.vue";
@@ -8,8 +10,8 @@ import EventHistory from "@/components/EventHistory.vue";
 <template>
     <div class="flex m-auto">
       <!-- header -->
-      <div>事件</div>
-      <div>日志</div>
+      <Button label="事件" />
+      <Button label="日志" disabled />
     </div>
 
     <div class="flex gap-2 h-full">

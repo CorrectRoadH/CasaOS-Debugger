@@ -7,16 +7,23 @@ const debuggerStore = useDebuggerStore();
 
 <template>
     <div class="flex flex-col w-full bg-slate-200 p-2 rounded-lg">
-        <div>事件定义</div>
+        <div class="font-black">事件定义</div>
         <div>
             <div>{{debuggerStore.selectedEventType.name}}</div>
+           
             <div>
-            属性定义
-            <div>
-                {{ 
-                    debuggerStore.selectedEventType?.propertyTypeList
-                 }}
-            </div>
+                <div class="font-black">属性定义</div>
+                <div>
+                    <!-- {{ 
+                        debuggerStore.selectedEventType?.propertyTypeList
+                    }} -->
+                    <div v-for="item in debuggerStore.selectedEventType.propertyTypeList">
+                        <div>item.name</div>
+                    </div> 
+                    <div v-if="debuggerStore.selectedEventType?.propertyTypeList?.length==0">
+                        无定义
+                    </div>
+                </div>
             </div>
         </div>
     </div>
