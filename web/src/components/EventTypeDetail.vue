@@ -21,7 +21,8 @@ const debuggerStore = useDebuggerStore();
                         <div>item.name</div>
                     </div> 
                     <div v-if="debuggerStore.selectedEventType?.propertyTypeList?.length==0">
-                        无定义
+                        <div>❗ 警告! Event应该有Propertise定义。请修改代码 </div>
+                        <div>无定义</div>
                     </div>
                 </div>
             </div>

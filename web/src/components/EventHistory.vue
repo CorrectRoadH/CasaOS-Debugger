@@ -14,13 +14,13 @@ let error; // Store any potential error
 
 const fetchEventTypes = async () => {
     try {
-        const name = debuggerStore.selectedEventType?.name == "all" ? undefined : debuggerStore.selectedEventType?.name;
+        const eventType = debuggerStore.selectedEventType?.name == "all" ? undefined : debuggerStore.selectedEventType?.name;
 
         const { data, error } = await client.GET("/events",{
             params: {
                 query: {
                     sourceId: debuggerStore.selectedSourceID,
-                    name,
+                    eventType,
                     offset: 0,
                     length: 100
                 }  
@@ -36,8 +36,8 @@ const fetchEventTypes = async () => {
 watch(debuggerStore, async () => {
     await fetchEventTypes();
 });
-
 </script>
+
 <template>
 <div>事件历史</div>
 

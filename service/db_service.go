@@ -64,12 +64,7 @@ func (s *DBService) Init() {
 }
 
 func convertTimestamp(ts string) (time.Time, error) {
-	i, err := strconv.ParseInt(ts, 10, 64)
-	if err != nil {
-		return time.Time{}, err
-	}
-	// 转换为Go的time.Time，然后格式化为SQLite可接受的格式
-	return time.Unix(i, 0), nil
+	return time.Parse(time.RFC3339, ts)
 }
 
 func (s *DBService) InsertEvent(uuid string, properties map[string]string, sourceID string, name string, timestamp *time.Time) error {
@@ -128,7 +123,8 @@ func (s *DBService) QueryEvent(name *string, sourceID *string, offset int, lengt
 			where += " AND " + find[i]
 		}
 	}
-	rows, err := s.db.Query("SELECT uuid, properties, sourceID, name, timestamp FROM EventHistory" + where + " ORDER BY timestamp DESC LIMIT " + strconv.Itoa(length) + " OFFSET " + strconv.Itoa(offset))
+	sqlStmt := "SELECT uuid, properties, sourceID, name, timestamp FROM EventHistory" + where + " ORDER BY timestamp DESC LIMIT " + strconv.Itoa(length) + " OFFSET " + strconv.Itoa(offset)
+	rows, err := s.db.Query(sqlStmt)
 	if err != nil {
 		return result, err
 	}
