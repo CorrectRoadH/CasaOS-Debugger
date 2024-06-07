@@ -107,7 +107,7 @@ func (s *DBService) SourceList() ([]string, error) {
 }
 
 func (s *DBService) QueryEvent(name *string, sourceID *string, offset int, length int) ([]message_bus.Event, error) {
-	var result []message_bus.Event
+	var result []message_bus.Event = []message_bus.Event{}
 
 	find := []string{}
 	if name != nil {

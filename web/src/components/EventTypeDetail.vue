@@ -3,7 +3,7 @@ import { useDebuggerStore } from "@/stores/debugger";
 
 const props = defineProps<{
   sourceID: string;
-  eventType?: string; 
+  eventType: string; 
 }>()
 
 const debuggerStore = useDebuggerStore();

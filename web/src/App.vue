@@ -19,6 +19,7 @@ import SourceList from './components/SourceList.vue';
 
     <template #content>
       <BasePanel id="panel1" :highlight-header="false">
+        
         <template #content> 
           <div class="flex flex-col">
             <Suspense> 

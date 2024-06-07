@@ -46,9 +46,11 @@ watch(() => props.eventType, () => {
 <div>事件历史</div>
 
 <div class="flex flex-col w-full h-full overflow-scroll rounded-lg gap-2">
-    {{props.eventType}}
     <div v-for="item in history">
         <EventDetail :event="item" :sourceID="props.sourceID" :eventType="props.eventType"  />
     </div>
-</div>
+    <div class="m-auto font-black" v-if="history.length == 0">
+      ❗ 无事件
+    </div>
+  </div>
 </template>

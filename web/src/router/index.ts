@@ -18,12 +18,6 @@ const router = createRouter({
         eventType: route.params.eventType
       })
     },
-    // {
-    //   path: '/:sourceID',
-    //   name: 'service',
-    //   component: ServiceView,
-    //   props: (route) => ({ sourceID: route.params.sourceID})
-    // },
   ]
 })
 
