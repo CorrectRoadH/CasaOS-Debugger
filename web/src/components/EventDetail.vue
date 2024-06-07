@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // define props
-import { useDebuggerStore } from '@/stores/debugger';
 import { defineProps } from 'vue';
+import { useRouter } from 'vue-router';
 
 const props = defineProps<{
     event: {
@@ -10,20 +10,20 @@ const props = defineProps<{
         uuid: string;
         timestamp: string; // like `2024-06-05T09:24:56Z` 
     };
+    sourceID: string;
+    eventType?: string; 
 }>();
 
 const propObjKeys = Object.keys(props.event.properties);
-
-const debuggerStore = useDebuggerStore();
 
 const convertToLocalTime = (ts:string) => {
     const date = new Date(ts);
     return date.toLocaleString();
 };
+const router = useRouter();
 
 const eventNamebeClicked = () => {
-    console.log("eventNamebeClicked", props.event.name);
-    debuggerStore.selectedEventType = {name: props.event.name};
+    router.push(`/${props.sourceID}/${props.eventType}`);
 };
 
 </script>
@@ -56,6 +56,7 @@ const eventNamebeClicked = () => {
         </div>
     </div>
 </template>
+
 <style>
 .event-property {
     width: 100%;

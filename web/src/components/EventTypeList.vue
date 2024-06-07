@@ -10,10 +10,6 @@ const client = createClient<paths>({ baseUrl: "/v2/debugger/" });
 
 const debuggerStore = useDebuggerStore();
 
-// let data = ref([]); // Store the fetched data
-// let error; // Store any potential error
-
-
 // defined props
 const props = defineProps<{
   sourceID: string;
@@ -29,43 +25,29 @@ const {data,error} =  await client.GET("/events/types", {
       },
     }); 
 
-// const fetchEventTypes = async () => {
-//   try {
-//     const response = await client.GET("/events/types", {
-//       params: {
-//         query: {
-//           sourceId: sourceID,
-//         },
-//       },
-//     });
-//     data.value = [{name: "all"},...response.data?.data];
-//     error = undefined;
-//   } catch (err) {
-//     console.error("Error fetching event types:", err);
-//     error = err;
-//   }
-// };
-
-// // Fetch data initially or whenever selectedSourceID changes
-// watch([sourceID], async () => {
-//   console.log("sourceID changed, fetching event types",sourceID);
-//   await fetchEventTypes();
-// });
 
 const router = useRouter();
 
 
-const handleEventTypebeClicked = (EventTpye:string) => {
-  router.push(`/${props.sourceID}/${EventTpye}`);
+const handleEventTypebeClicked = (eventType:any) => {
+  router.push(`/${props.sourceID}/${eventType.any}`);
+  debuggerStore.selectedEventType = eventType
 }    
 
 </script>
 
 <template>
     <!-- <Listbox v-model="debuggerStore.selectedEventType" :options="data?.data" optionLabel="name" class="w-full md:w-14rem" listStyle="max-height:250px"/> -->
-    <div class="flex flex-col gap-2">
-      <div v-for="eventType in data?.data" @click="handleEventTypebeClicked(eventType.name)" class="cursor-pointer">
+    <div class="flex flex-col gap-2 p-2">
+      <div v-for="eventType in data?.data" @click="handleEventTypebeClicked(eventType)" class="cursor-pointer">
+        <div
+          :class="{ 
+            'p-2 rounded-lg ': true,
+            'bg-slate-300 shadow-lg' : props.eventType === eventType.name,
+          }"
+        >
           {{ eventType.name }}
+        </div>
       </div>
    </div>
 </template>

@@ -33,7 +33,7 @@ const { data, error } = await client.GET("/events",{
 <div class="flex flex-col w-full h-full overflow-scroll rounded-lg gap-2">
     {{props.eventType}}
     <div v-for="item in data?.data">
-        <EventDetail :event="item" />
+        <EventDetail :event="item" :sourceId="props.sourceID" :eventType="props.eventType"  />
     </div>
 </div>
 </template>
