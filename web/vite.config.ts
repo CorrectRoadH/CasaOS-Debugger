@@ -43,6 +43,9 @@ const base = isDevMode ? devBase : prodBase;
 // https://vitejs.dev/config/
 export default defineConfig({
   base,
+  build: {
+    outDir: "../raw/usr/share/casaos/www/modules/casaos_debugger",
+  },
   plugins: [
     vue(),
     vueJsx(),

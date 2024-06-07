@@ -2,10 +2,10 @@
 After=casaos-gateway.service
 After=casaos-message-bus.service
 After=casaos-user-service.service
-Description=ZimaOS Chat Service
+Description=A Debug Tool for CasaOS and ZimaOS
 
 [Service]
-ExecStart=/usr/bin/zimaos-status
+ExecStart=/usr/bin/casaos-debugger
 Restart=always
 
 [Install]

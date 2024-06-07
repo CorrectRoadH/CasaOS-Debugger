@@ -22,7 +22,7 @@
     },
     "services": [
         {
-            "name": "zimaos-debugger"
+            "name": "casaos-debugger"
         }
     ]     
 }
