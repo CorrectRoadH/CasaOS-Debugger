@@ -14,7 +14,7 @@ const beSelectSourceID = ref<string | null>(null);
 const router = useRouter();
 
 const handleSourceIDbeClicked = (sourceID:string) => {
-    router.push(`/${sourceID}`);
+    router.push(`/${sourceID}/all`);
     beSelectSourceID.value = sourceID;
 }
 

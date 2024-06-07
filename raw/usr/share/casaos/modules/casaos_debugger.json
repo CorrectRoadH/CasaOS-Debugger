@@ -8,8 +8,8 @@
         "prefetch": true,
         "show": true,
         "entry": "/modules/casaos_debugger/index.html",
-        "icon": "/modules/casaos_debugger/logo.png",
-        "description": "Debugg Tool for CasaOS and ZimaOS",
+        "icon": "/modules/casaos_debugger/logo.webp",
+        "description": "Debug Tool for CasaOS and ZimaOS",
         "formality": {
           "type": "newtab",
           "props": {

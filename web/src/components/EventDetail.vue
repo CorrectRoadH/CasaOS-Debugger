@@ -11,7 +11,7 @@ const props = defineProps<{
         timestamp: string; // like `2024-06-05T09:24:56Z` 
     };
     sourceID: string;
-    eventType?: string; 
+    eventType: string; 
 }>();
 
 const propObjKeys = Object.keys(props.event.properties);

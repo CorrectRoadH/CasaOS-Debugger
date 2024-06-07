@@ -8,7 +8,7 @@ import EventHistory from "@/components/EventHistory.vue";
 
 const props = defineProps<{
   sourceID: string;
-  eventType?: string; 
+  eventType: string; 
 }>()
 
 // watch(() => props.sourceID, (newSourceID) => {

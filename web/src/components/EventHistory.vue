@@ -7,7 +7,7 @@ import EventDetail from "./EventDetail.vue";
 
 const props = defineProps<{
   sourceID: string;
-  eventType?: string; 
+  eventType: string; 
 }>()
 
 const client = createClient<paths>({ baseUrl: "/v2/debugger/" });
@@ -31,6 +31,9 @@ const fetchHistory = async () => {
   })
   history.value = data?.data
 }
+
+console.log("refresh eventType")
+fetchHistory()
 
 watch(() => props.eventType, () => {
   fetchHistory()

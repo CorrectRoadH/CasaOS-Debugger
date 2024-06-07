@@ -13,7 +13,7 @@ const debuggerStore = useDebuggerStore();
 // defined props
 const props = defineProps<{
   sourceID: string;
-  eventType?: string;
+  eventType: string;
 }>()
 
 
