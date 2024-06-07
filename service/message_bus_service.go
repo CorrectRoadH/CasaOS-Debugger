@@ -42,21 +42,16 @@ func (s *MessageBusService) EventTypeList(ctx context.Context) []message_bus.Eve
 			log.Fatalln(err.Error())
 		}
 
-		ctx, cancel := context.WithTimeout(context.Background(), DefaultTimeout)
-		defer cancel()
-
 		response, err := client.GetEventTypesWithResponse(ctx)
 		if err != nil {
 			log.Fatalln(err.Error())
 		}
-		for _, eventType := range *response.JSON200 {
-			s.eventTypeList = append(s.eventTypeList, eventType)
-		}
+		s.eventTypeList = append(s.eventTypeList, *response.JSON200...)
 	}
 	return s.eventTypeList
 }
 
-func (s *MessageBusService) StartRecord() {
+func (s *MessageBusService) StartRecord(_ context.Context) {
 	dialer := engineio.Dialer{
 		Transports: []transport.Transport{
 			websocket.Default,

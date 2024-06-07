@@ -4,6 +4,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"net"
@@ -67,7 +68,8 @@ func main() {
 
 	{
 		// cron job
-		go service.MyService.MessageBus().StartRecord()
+		ctx := context.Background()
+		go service.MyService.MessageBus().StartRecord(ctx)
 	}
 
 	// setup listener

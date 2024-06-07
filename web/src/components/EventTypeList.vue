@@ -47,7 +47,7 @@ const handleEventTypebeClicked = (eventType:any) => {
 
         :class="{ 
           'p-2 rounded-lg cursor-pointer': true,
-          'bg-slate-300 shadow-lg' : props.eventType === `all`,
+          'p-card	 shadow-lg' : props.eventType === `all`,
         }"
 
       >
@@ -58,7 +58,7 @@ const handleEventTypebeClicked = (eventType:any) => {
         <div
           :class="{ 
             'p-2 rounded-lg ': true,
-            'bg-slate-300 shadow-lg' : props.eventType === eventType.name,
+            'p-card	 shadow-lg' : props.eventType === eventType.name,
           }"
         >
           {{ eventType.name }}

@@ -2,7 +2,7 @@
 <template>
     <div class="flex w-full h-full overflow-hidden lg:pr-3">
       <!-- Sidebar Start -->
-      <div class="ease -mr-1 flex h-screen w-0 flex-col overflow-y-hidden bg-[#F2F4F5] transition-all duration-200"
+      <div class="ease -mr-1 flex h-screen w-0 flex-col overflow-y-hidden transition-all duration-200"
         id="menu-bar" :class="[
           { 'fixed -left-64 top-0 z-[4000] w-64': isMobile && !showLeftSidebar },
           { 'fixed -left-64 top-0 z-[4000] w-64 translate-x-64': isMobile && showLeftSidebar },

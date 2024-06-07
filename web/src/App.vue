@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HomeView from './views/HomeView.vue';
+import { RouterView } from 'vue-router'
 
 import Layout from './components/kit/Layout.vue';
 import BasePanel from './components/kit/BasePanel.vue';

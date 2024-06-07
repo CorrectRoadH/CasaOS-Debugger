@@ -11,7 +11,7 @@ const debuggerStore = useDebuggerStore();
 </script>
 
 <template>
-    <div class="flex flex-col w-full bg-slate-200 p-2 rounded-lg">
+    <div class="flex flex-col w-full p-card	p-2 rounded-lg">
         <div class="font-black">事件定义</div>
         <div>
             <div>{{debuggerStore.selectedEventType.name}}</div>

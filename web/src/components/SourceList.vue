@@ -33,17 +33,24 @@ const handleHomebeClicked = () => {
         @click="handleHomebeClicked()"
         :class="{ 
            'p-2 rounded-lg ': true,
-           'bg-slate-300 shadow-lg' : beSelectSourceID === null,
+           'p-card shadow-lg' : beSelectSourceID === null,
         }"
+        
         >Home</div>
 
         <div v-for="source in data?.data" @click="handleSourceIDbeClicked(source)" class="cursor-pointer">
             <div
                  :class="{ 
                     'p-2 rounded-lg ': true,
-                    'bg-slate-300 shadow-lg' : beSelectSourceID === source,
+                    'p-card	 shadow-lg' : beSelectSourceID === source,
                  }"
             >{{ source }}</div>
         </div>
      </div>
 </template>
+
+<style>
+highlighted {
+    background-color: var(--highlight-bg)
+}
+</style>

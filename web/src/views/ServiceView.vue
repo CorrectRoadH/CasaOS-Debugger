@@ -17,7 +17,7 @@ const props = defineProps<{
 </script>
 
 <template>
-    <div class="flex m-auto">
+    <div class="flex m-auto ">
       <!-- header -->
       <Button label="事件" />
       <Button label="日志" disabled />
@@ -30,7 +30,7 @@ const props = defineProps<{
         </Suspense>
       </div>
 
-      <div class="flex flex-col w-full h-full gap-2">
+      <div class="flex flex-col w-full h-full gap-2 p-4">
         <EventTypeDetail :sourceID="props.sourceID" :eventType="props.eventType" />
         <EventHistory :sourceID="props.sourceID" :eventType="props.eventType" />
       </div>
