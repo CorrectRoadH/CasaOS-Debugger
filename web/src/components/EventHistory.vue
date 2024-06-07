@@ -29,6 +29,8 @@ const fetchHistory = async () => {
           }  
       }
   })
+
+  // @ts-ignore
   history.value = data?.data
 }
 

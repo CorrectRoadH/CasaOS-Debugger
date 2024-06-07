@@ -3,10 +3,14 @@
 import { defineProps } from 'vue';
 import { useRouter } from 'vue-router';
 
+interface EventProperties {
+  [key: string]: any; // 你可以定义具体的类型，而不是 `any`
+}
+
 const props = defineProps<{
     event: {
         name: string;
-        properties: string;
+        properties: EventProperties;
         uuid: string;
         timestamp: string; // like `2024-06-05T09:24:56Z` 
     };
@@ -51,7 +55,7 @@ const eventNamebeClicked = () => {
                 <div class="font-extrabold">{{key}}</div>
 
                 <!-- not overflow the witdh -->
-                <div class="event-property">{{props.event.properties[key]}}</div>
+                <div class="event-property">{{props.event.properties[key] }}</div>
             </div>
         </div>
     </div>

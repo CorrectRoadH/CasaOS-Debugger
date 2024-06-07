@@ -3,7 +3,12 @@ import { defineStore } from 'pinia'
 
 export const useDebuggerStore = defineStore('debugger', () => {
   const selectedSourceID = ref("")
-  const selectedEventType = ref({name:"none"})
+  const selectedEventType = ref({
+    name:"all",
+    propertyTypeList:[
+      {name:""}
+    ]
+  })
 
   return { selectedSourceID,selectedEventType }
 })
