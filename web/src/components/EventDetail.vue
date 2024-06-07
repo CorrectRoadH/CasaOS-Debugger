@@ -2,6 +2,7 @@
 // define props
 import { defineProps } from 'vue';
 import { useRouter } from 'vue-router';
+// @ts-ignore
 import JsonViewer from 'vue-json-viewer'
 
 interface EventProperties {

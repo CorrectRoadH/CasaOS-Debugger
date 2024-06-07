@@ -18,11 +18,25 @@ const handleSourceIDbeClicked = (sourceID:string) => {
     beSelectSourceID.value = sourceID;
 }
 
+const handleHomebeClicked = () => {
+    router.push(`/`);
+    beSelectSourceID.value = null;
+}
+
+
 </script>
 
 <template>
     <!-- <Listbox v-model="debuggerStore.selectedSourceID" :options="data?.data" class="w-full md:w-14rem" listStyle="max-height:250px"/> -->
      <div class="flex flex-col gap-2 p-2">
+        <div
+        @click="handleHomebeClicked()"
+        :class="{ 
+           'p-2 rounded-lg ': true,
+           'bg-slate-300 shadow-lg' : beSelectSourceID === null,
+        }"
+        >Home</div>
+
         <div v-for="source in data?.data" @click="handleSourceIDbeClicked(source)" class="cursor-pointer">
             <div
                  :class="{ 
