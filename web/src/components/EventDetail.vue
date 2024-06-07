@@ -23,7 +23,7 @@ const convertToLocalTime = (ts:string) => {
 const router = useRouter();
 
 const eventNamebeClicked = () => {
-    router.push(`/${props.sourceID}/${props.eventType}`);
+    router.push(`/${props.sourceID}/${props.event.name}`);
 };
 
 </script>

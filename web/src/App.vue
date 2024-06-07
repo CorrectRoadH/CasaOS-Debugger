@@ -9,7 +9,7 @@ import SourceList from './components/SourceList.vue';
 </script>
 
 <template>
-  <Layout class="flex w-full h-full overflow-hidden" id="sidebar" :show-right-sidebar="false"
+  <Layout class="flex w-full h-screen overflow-hidden" id="sidebar" :show-right-sidebar="false"
     :is-mobile="false" :show-left-sidebar="true">
     <template #sidebar>
       <Suspense> 
@@ -29,7 +29,6 @@ import SourceList from './components/SourceList.vue';
         </template>
       </BasePanel>
     </template>
-
   </Layout>
 </template>
 

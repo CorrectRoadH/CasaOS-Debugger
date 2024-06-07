@@ -1,10 +1,12 @@
 <template>
     <div
-      class="my-1 min-h-[58px] overflow-hidden rounded-xl border border-gray-500 transition-all duration-300 ease-in-out"
+      class="h-full my-1 min-h-[58px] overflow-hidden rounded-xl border border-gray-500 transition-all duration-300 ease-in-out"
       ref="mainPanel"
       :class="flexClass"
     >
-      <ScrollPanel>
+      <ScrollPanel 
+        class="h-full"
+      >
         <!-- Header Start -->
         <header
           class="top-0 z-10 flex items-center w-full px-4 transition duration-200 border-b shrink-0 backdrop-blur"

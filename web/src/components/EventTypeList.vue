@@ -30,7 +30,7 @@ const router = useRouter();
 
 
 const handleEventTypebeClicked = (eventType:any) => {
-  router.push(`/${props.sourceID}/${eventType.any}`);
+  router.push(`/${props.sourceID}/${eventType.name}`);
   debuggerStore.selectedEventType = eventType
 }    
 
@@ -39,6 +39,21 @@ const handleEventTypebeClicked = (eventType:any) => {
 <template>
     <!-- <Listbox v-model="debuggerStore.selectedEventType" :options="data?.data" optionLabel="name" class="w-full md:w-14rem" listStyle="max-height:250px"/> -->
     <div class="flex flex-col gap-2 p-2">
+      <div
+        @click="handleEventTypebeClicked({
+          name: 'all',
+          description: 'all',
+        })"
+
+        :class="{ 
+          'p-2 rounded-lg cursor-pointer': true,
+          'bg-slate-300 shadow-lg' : props.eventType === `all`,
+        }"
+
+      >
+        All
+      </div>
+
       <div v-for="eventType in data?.data" @click="handleEventTypebeClicked(eventType)" class="cursor-pointer">
         <div
           :class="{ 
