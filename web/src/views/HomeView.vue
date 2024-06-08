@@ -1,5 +1,5 @@
 <template>
-<div class="flex flex-col h-full w-full p-2">
+<div class="flex flex-col h-full w-full p-4">
   <div class="flex w-full">
     <div class="flex flex-col mx-auto">
       <img class="w-48 h-48" src="/logo.webp" >
@@ -25,17 +25,21 @@
   <Divider />
 
   <Card>
-    <template #title>错误中心</template>
+    <template #title>不正确的事件</template>
     <template #content>
-      <div>
-        错误的事件
-      </div>
-      <div>
-        错误的日志
-      </div>
-  
+      WIP
     </template>
   </Card>
+
+  <Divider />
+
+  <Card>
+    <template #title>报错的日志</template>
+    <template #content>
+      WIP
+    </template>
+  </Card>
+
 
 </div>
 </template>

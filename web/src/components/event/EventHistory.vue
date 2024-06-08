@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import createClient from "openapi-fetch";
-import type { paths } from "../api/openapi" 
+import type { paths } from "../../api/openapi" 
 import { ref, watch } from "vue";
 import EventDetail from "./EventDetail.vue";
-
+import ServiceMap from "@/lib/utils";
 
 const props = defineProps<{
-  sourceID: string;
+  serviceName: string;
   eventType: string; 
 }>()
 
@@ -14,6 +14,8 @@ const client = createClient<paths>({ baseUrl: "/v2/debugger/" });
 
 
 let history = ref([])
+// @ts-ignore
+const sourceID = ServiceMap[props.serviceName].eventName
 
 
 const fetchHistory = async () => {
@@ -22,7 +24,7 @@ const fetchHistory = async () => {
   const { data, error } = await client.GET("/events",{
       params: {
           query: {
-              sourceId: props.sourceID,
+              sourceId: sourceID,
               eventType,
               offset: 0,
               length: 100
@@ -47,7 +49,7 @@ watch(() => props.eventType, () => {
 
 <div class="flex flex-col w-full h-full overflow-scroll rounded-lg gap-2">
     <div v-for="item in history">
-        <EventDetail :event="item" :sourceID="props.sourceID" :eventType="props.eventType"  />
+        <EventDetail :event="item" :sourceID="sourceID" :eventType="props.eventType"  />
     </div>
     <div class="m-auto font-black" v-if="history.length == 0">
       ❗ 无事件

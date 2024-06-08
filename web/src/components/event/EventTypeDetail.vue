@@ -2,7 +2,7 @@
 import { useDebuggerStore } from "@/stores/debugger";
 
 const props = defineProps<{
-  sourceID: string;
+    serviceName: string;
   eventType: string; 
 }>()
 

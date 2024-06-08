@@ -35,7 +35,7 @@ const eventNamebeClicked = () => {
 </script>
 
 <template>
-    <div class="flex flex-col w-full bg-gray-200 p-2 rounded-lg">
+    <div class="flex flex-col w-full p-card	 p-2 rounded-lg">
         <div class="flex gap-2">
 
             <div class="text-blue-500 font-bold cursor-pointer"
@@ -55,7 +55,7 @@ const eventNamebeClicked = () => {
         <div v-for="key in propObjKeys" :key="key">
             <div class="flex flex-col flex-wrap gap-2">
                 <div class="font-extrabold">{{key}}</div>
-                <json-viewer :value="props.event.properties[key]" copyable></json-viewer>
+                <json-viewer class="!bg-black" :value="props.event.properties[key]" copyable></json-viewer>
 
             </div>
         </div>

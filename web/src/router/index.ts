@@ -10,11 +10,11 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/:sourceID/:eventType',
+      path: '/:serviceName/:eventType',
       name: 'service-event',
       component: ServiceView,
       props: (route) => ({ 
-        sourceID: route.params.sourceID,
+        serviceName: route.params.serviceName,
         eventType: route.params.eventType
       })
     },
