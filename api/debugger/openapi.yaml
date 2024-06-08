@@ -57,7 +57,23 @@ paths:
           $ref: "#/components/responses/response_get_source_list_ok"
         "500":
           $ref: "#/components/responses/response_internal_server_error"
- 
+  /log:
+    get:
+      summary: Query log
+      operationId: QueryLog
+      parameters:
+        - name: service
+          in: query
+          required: true
+          schema:
+            type: string
+          example: casaos-installer
+      responses:
+        "200":
+          $ref: "#/components/responses/response_query_log_ok"
+        "500":
+          $ref: "#/components/responses/response_internal_server_error"
+
   /events:
     get:
       summary: Query messages
@@ -224,6 +240,20 @@ components:
                     items:
                       $ref: "#/components/schemas/Event"
 
+    response_query_log_ok:
+      description: OK
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/base_response"
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Log"
+
   schemas:
     base_response: # Every response should inherit from BaseResponse
       properties:
@@ -249,3 +279,6 @@ components:
       x-go-type-import:
         name: message_bus
         path: github.com/CorrectRoadH/CasaOS-Debugger/codegen/message_bus
+
+    Log:
+      type: string

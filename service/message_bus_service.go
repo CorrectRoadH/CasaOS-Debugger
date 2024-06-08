@@ -22,8 +22,8 @@ import (
 )
 
 type MessageBusService struct {
-	record        bool
 	eventTypeList []message_bus.EventType
+	record        bool
 }
 
 func NewMessageBusService() *MessageBusService {

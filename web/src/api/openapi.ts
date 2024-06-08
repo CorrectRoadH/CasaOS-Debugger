@@ -13,6 +13,10 @@ export interface paths {
     /** Get all sources */
     get: operations["GetAllSources"];
   };
+  "/log": {
+    /** Query log */
+    get: operations["QueryLog"];
+  };
   "/events": {
     /** Query messages */
     get: operations["GetAllMessages"];
@@ -36,6 +40,7 @@ export interface components {
     EventType: Record<string, never>;
     /** @description Event */
     Event: Record<string, never>;
+    Log: string;
   };
   responses: {
     /** @description OK */
@@ -98,6 +103,14 @@ export interface components {
         };
       };
     };
+    /** @description OK */
+    response_query_log_ok: {
+      content: {
+        "application/json": components["schemas"]["base_response"] & {
+          data?: components["schemas"]["Log"][];
+        };
+      };
+    };
   };
   parameters: {
     name: string;
@@ -124,6 +137,19 @@ export interface operations {
   GetAllSources: {
     responses: {
       200: components["responses"]["response_get_source_list_ok"];
+      500: components["responses"]["response_internal_server_error"];
+    };
+  };
+  /** Query log */
+  QueryLog: {
+    parameters: {
+      query: {
+        /** @example casaos-installer */
+        service: string;
+      };
+    };
+    responses: {
+      200: components["responses"]["response_query_log_ok"];
       500: components["responses"]["response_internal_server_error"];
     };
   };

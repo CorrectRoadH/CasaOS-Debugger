@@ -19,6 +19,7 @@ type Services struct {
 	runtimePath    string
 	db             *DBService
 	messageService *MessageBusService
+	logService     *LogService
 }
 
 func Initialize(runtimePath string) {
@@ -46,6 +47,13 @@ func (s *Services) MessageBus() *MessageBusService {
 		s.messageService = NewMessageBusService()
 	}
 	return s.messageService
+}
+
+func (s *Services) LogService() *LogService {
+	if s.logService == nil {
+		s.logService = NewLogService()
+	}
+	return s.logService
 }
 
 func (s *Services) Gateway() external.ManagementService {
