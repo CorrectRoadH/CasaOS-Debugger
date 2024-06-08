@@ -68,6 +68,18 @@ paths:
           schema:
             type: string
           example: casaos-installer
+        - name: offset
+          in: query
+          required: true
+          schema:
+            type: integer
+          example: 0
+        - name: length
+          in: query
+          required: true
+          schema:
+            type: integer
+          example: 10
       responses:
         "200":
           $ref: "#/components/responses/response_query_log_ok"

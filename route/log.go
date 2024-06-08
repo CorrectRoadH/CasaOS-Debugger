@@ -10,12 +10,12 @@ import (
 )
 
 func (r DebuggerRoute) QueryLog(c echo.Context, params codegen.QueryLogParams) error {
-	log, err := service.MyService.LogService().QueryLog(c.Request().Context(), params.Service)
+	logs, err := service.MyService.LogService().QueryLog(c.Request().Context(), params.Service, params.Offset, params.Length)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, codegen.ResponseQueryLogOk{
 		Message: lo.ToPtr("OK"),
-		Data:    lo.ToPtr([]string{log}),
+		Data:    lo.ToPtr(logs),
 	})
 }

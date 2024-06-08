@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"os"
+	"strings"
 )
 
 type LogService struct{}
@@ -17,6 +18,10 @@ var serviceMap = map[string]string{
 	"casaos-installer":          "/var/log/casaos/installer.log",
 	"casaos-app-management.log": "/var/log/casaos/app-management.log",
 	"zimaos-mod-management":     "/var/log/casaos/ZimaOS-ModManagement.log",
+	"zimaos":                    "",
+	"zimaos-local-storage":      "",
+	"casaos-gateway":            "",
+	"casaos-user-service":       "",
 }
 
 var (
@@ -24,10 +29,10 @@ var (
 	ErrLogNotFound         = errors.New("log not found")
 )
 
-func (s *LogService) QueryLog(_ context.Context, serviceName string) (string, error) {
+func (s *LogService) QueryLog(_ context.Context, serviceName string, offset int, length int) ([]string, error) {
 	logPath, ok := serviceMap[serviceName]
 	if !ok {
-		return "", ErrServiceNameNotFound
+		return []string{}, ErrServiceNameNotFound
 	}
 
 	// read file
@@ -37,17 +42,33 @@ func (s *LogService) QueryLog(_ context.Context, serviceName string) (string, er
 	openedFile, err := os.Open(logPath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return "", ErrLogNotFound
+			return []string{}, ErrLogNotFound
 		}
-		return "", err
+		return []string{}, err
 	}
 	defer openedFile.Close()
 
 	// Read the file content
 	content, err := ioutil.ReadAll(openedFile)
 	if err != nil {
-		return "", err
+		return []string{}, err
 	}
 
-	return string(content), nil
+	// spill the content into lines
+	lines := strings.Split(string(content), "\n")
+
+	// check offset and length
+	if offset < 0 {
+		offset = 0
+	}
+	if length < 0 {
+		length = 0
+	}
+	if offset >= len(lines) {
+		return []string{}, nil
+	}
+	if offset+length >= len(lines) {
+		return lines[offset:], nil
+	}
+	return lines[offset : offset+length], nil
 }

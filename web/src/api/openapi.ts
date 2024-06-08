@@ -146,6 +146,10 @@ export interface operations {
       query: {
         /** @example casaos-installer */
         service: string;
+        /** @example 0 */
+        offset: number;
+        /** @example 10 */
+        length: number;
       };
     };
     responses: {

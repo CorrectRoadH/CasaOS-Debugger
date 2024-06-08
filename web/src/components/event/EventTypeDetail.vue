@@ -26,7 +26,9 @@ const debuggerStore = useDebuggerStore();
                         <div class="bg-red-200 p-2 rounded-lg">❗ 警告! Event应该有Propertise定义。请修改代码 </div>
                         <div>无定义</div>
                     </div>
-                    <div class="bg-yellow-200 p-2 rounded-lg">❗ 注意，如果这里的字段与下面记录对不上，请提醒相关开发人员修正schema</div>
+                    <div class="text-black bg-yellow-200 p-2 rounded-lg">
+                        ❗ 注意，如果这里的字段与下面记录对不上，请提醒相关开发人员修正schema
+                    </div>
                 </div>
             </div>
         </div>

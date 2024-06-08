@@ -2,7 +2,7 @@ const ServiceMap = {
     'ZimaOS': {
         'name':'ZimaOS',
         'eventName':'casaos',
-        'logName':'CasaOS',
+        'logName':'zimaos',
     },
     'App Management': {
         'name':'App Management',
