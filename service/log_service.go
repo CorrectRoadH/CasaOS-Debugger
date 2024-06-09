@@ -15,13 +15,13 @@ func NewLogService() *LogService {
 }
 
 var serviceMap = map[string]string{
-	"casaos-installer":          "/var/log/casaos/installer.log",
-	"casaos-app-management.log": "/var/log/casaos/app-management.log",
-	"zimaos-mod-management":     "/var/log/casaos/ZimaOS-ModManagement.log",
-	"zimaos":                    "",
-	"zimaos-local-storage":      "",
-	"casaos-gateway":            "",
-	"casaos-user-service":       "",
+	"casaos-installer":      "/var/log/casaos/installer.log",
+	"casaos-app-management": "/var/log/casaos/app-management.log",
+	"zimaos-mod-management": "/var/log/casaos/ZimaOS-ModManagement.log",
+	"zimaos":                "/var/log/casaos/log.log",
+	"zimaos-local-storage":  "/var/log/casaos/local-storage.log",
+	"casaos-gateway":        "/var/log/casaos/gateway.log",
+	"casaos-user-service":   "/var/log/casaos/user-service.log",
 }
 
 var (

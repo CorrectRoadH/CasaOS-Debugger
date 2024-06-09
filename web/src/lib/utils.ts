@@ -23,6 +23,16 @@ const ServiceMap = {
         'name':'Local Storage',
         'eventName':'local-storage',
         'logName':'zimaos-local-storage',
+    },
+    'User Service': {
+        'name':'User Service',
+        'eventName':'user-service',
+        'logName':'casaos-user-service',
+    },
+    'Gateway': {
+        'name':'Gateway',
+        'eventName':'gateway',
+        'logName':'casaos-gateway',
     }
 }
 

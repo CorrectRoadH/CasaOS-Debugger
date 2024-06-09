@@ -8,8 +8,9 @@
 
 
   <div class="flex flex-col gap-2">
-
-    <div v-for="item in logs"  class="p-card rounded-lg p-4"
+    
+    <div v-if="isLoading">Loading</div>
+    <div v-for="item in logs" v-else class="p-card rounded-lg p-4"
     :class="{
       'bg-red-500': typeof item !== 'string' && item.level === 'error',
       'bg-yellow-500': typeof item === 'string' || item.level === 'warn',
@@ -41,49 +42,14 @@
 
 <script setup lang="ts">
 import ServiceMap from '@/lib/utils';
-import createClient from "openapi-fetch";
-import type { paths } from "../../api/openapi" 
 // @ts-ignore
 import JsonViewer from 'vue-json-viewer'
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import Dropdown from 'primevue/dropdown';
-import { computed, ref } from 'vue';
+import { ref, watch } from 'vue';
+import useLog from '@/lib/hook/useLog';
 
-interface LogData {
-    timestamp: string;
-    level: string;
-    message: string;
-    data: Record<string, any>;
-    raw: string;
-}
-
-function parseLogString(raw: string): LogData|string {
-    const timestampRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/;
-    const levelRegex = /\b(info|error|warn|debug|trace)\b/;
-    const dataRegex = /\{.*\}$/;
-
-    const timestampMatch = raw.match(timestampRegex);
-    const levelMatch = raw.match(levelRegex);
-    const dataMatch = raw.match(dataRegex);
-
-    if (!timestampMatch || !levelMatch || !dataMatch) {
-      return raw
-    }
-
-    const timestamp = timestampMatch[0];
-    const level = levelMatch[0];
-    const message = raw.substring(timestamp.length + level.length + 2, raw.indexOf(dataMatch[0])).trim();
-    const data = JSON.parse(dataMatch[0]);
-
-    return {
-        timestamp,
-        level,
-        message,
-        data,
-        raw
-    };
-}
 
 const props = defineProps<{
   serviceName: string;
@@ -91,30 +57,17 @@ const props = defineProps<{
 }>()
 
 // @ts-ignore
-const logName = ServiceMap[props.serviceName].logName;
-const client = createClient<paths>({ baseUrl: "/v2/debugger/" });
+const logName = ref(ServiceMap[props.serviceName].logName);
 
-const { data, error } = await client.GET("/log",{
-      params: {
-          query: {
-            service: logName,
-            offset: 0,
-            length: 100,
-          }  
-      }
-})
+watch(() => props.serviceName, () => {
+  console.log('props.serviceName',props.serviceName);
+  // @ts-ignore
+  logName.value = ServiceMap[props.serviceName].logName;
+});
 
 
 const selectedLevel = ref<string>('all');
 const levelOptions = ['all', 'info', 'warn', 'error', 'debug', 'trace'];
-
-const logs = computed(() => {
-  return data?.data?.map((log: string) => parseLogString(log)).filter((item:string|LogData)=>{
-    if (selectedLevel.value === 'all') {
-      return true;
-    }
-    return typeof item === 'string' || item.level === selectedLevel.value;
-  }) || [];
-})
+const { logs,error,isLoading }= useLog(selectedLevel,logName); 
 
 </script>
