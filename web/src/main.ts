@@ -5,6 +5,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config';
 import Button from 'primevue/button';
+//@ts-ignore
 import timeago from 'vue-timeago3'
 
 // define options
