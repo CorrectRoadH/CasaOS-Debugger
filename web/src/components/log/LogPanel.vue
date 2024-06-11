@@ -6,9 +6,7 @@
 
   <Dropdown v-model="selectedLevel" :options="levelOptions"  placeholder="select a level" checkmark :highlightOnSelect="false" class="w-full md:w-14rem" />
 
-
   <div class="flex flex-col gap-2">
-    
     <div v-if="isLoading">Loading</div>
     <div v-for="item in logs" v-else class="p-card rounded-lg p-4"
     :class="{
@@ -24,7 +22,9 @@
       <div v-else>
         <TabView>
           <TabPanel header="结构化">
-            <div>时间: {{item.timestamp}}</div>
+            <div>时间: {{item.timestamp}} 
+              <timeago :datetime="item.timestamp"/>
+            </div>
             <div>级别: {{item.level}}</div>
             <div>内容: {{item.message}}</div>
             <json-viewer class="!bg-white" :value="item.data" copyable></json-viewer>
