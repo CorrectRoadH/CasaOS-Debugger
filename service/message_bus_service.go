@@ -52,86 +52,92 @@ func (s *MessageBusService) EventTypeList(ctx context.Context) []message_bus.Eve
 }
 
 func (s *MessageBusService) StartRecord(_ context.Context) {
-	dialer := engineio.Dialer{
-		Transports: []transport.Transport{
-			websocket.Default,
-			polling.Default,
-		},
-	}
-
-	sioURL := fmt.Sprintf("http://%s/%s/socket.io", strings.TrimRight(rootURL, "/"), BasePathMessageBus)
-	conn, err := dialer.Dial(sioURL, nil)
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
-	defer conn.Close()
-
-	log.Printf("subscribed to %s via socketio", sioURL)
-
-	decoder := parser.NewDecoder(conn)
-
-	s.record = true
 	for {
-		header := parser.Header{}
-		name := ""
-		if err := decoder.DecodeHeader(&header, &name); err != nil {
-			if err == io.EOF {
-				time.Sleep(time.Millisecond * 100)
-				continue
-			}
-
-			log.Fatalln(err.Error())
+		dialer := engineio.Dialer{
+			Transports: []transport.Transport{
+				websocket.Default,
+				polling.Default,
+			},
 		}
 
-		values, err := decoder.DecodeArgs([]reflect.Type{
-			reflect.TypeOf(map[string]interface{}{}),
-		})
+		sioURL := fmt.Sprintf("http://%s/%s/socket.io", strings.TrimRight(rootURL, "/"), BasePathMessageBus)
+		conn, err := dialer.Dial(sioURL, nil)
 		if err != nil {
-			if err == io.EOF {
-				time.Sleep(time.Millisecond * 100)
-				continue
-			}
-
-			log.Println(err.Error())
+			logger.Error(err.Error())
+			continue
 		}
-		decoder.Close()
+		defer conn.Close()
 
-		for _, value := range values {
-			var event message_bus.Event
+		log.Printf("subscribed to %s via socketio", sioURL)
 
-			rawEvent := value.Interface().(map[string]interface{})
+		decoder := parser.NewDecoder(conn)
 
-			event.Name = name
+		for {
+			header := parser.Header{}
+			name := ""
+			if err := decoder.DecodeHeader(&header, &name); err != nil {
 
-			if _, ok := rawEvent["SourceID"]; ok {
-				event.SourceID = rawEvent["SourceID"].(string)
-			}
-
-			if _, ok := rawEvent["Properties"]; ok {
-				rawPropertise := rawEvent["Properties"].(map[string]interface{})
-				// string json to map
-				var properties map[string]string = make(map[string]string)
-				for key, value := range rawPropertise {
-					properties[key] = value.(string)
+				if err == io.EOF {
+					time.Sleep(time.Millisecond * 100)
+					continue
 				}
-				event.Properties = properties
+
+				logger.Error(err.Error())
+				time.Sleep(1 * time.Second)
+				break
 			}
 
-			if _, ok := rawEvent["uuid"]; ok {
-				event.Uuid = lo.ToPtr(rawEvent["uuid"].(string))
-			}
-
-			if _, ok := rawEvent["Timestamp"]; ok {
-				rawTimestamp := rawEvent["Timestamp"].(float64)
-				timestamp, cerr := time.Parse(time.RFC3339, fmt.Sprintf("%f", rawTimestamp))
-				if cerr == nil {
-					event.Timestamp = lo.ToPtr(timestamp)
-				}
-			}
-
-			err = MyService.DBService().InsertEvent(*event.Uuid, event.Properties, event.SourceID, event.Name, event.Timestamp)
+			values, err := decoder.DecodeArgs([]reflect.Type{
+				reflect.TypeOf(map[string]interface{}{}),
+			})
 			if err != nil {
-				logger.Error("InsertEvent error: ", zap.Error(err))
+				if err == io.EOF {
+					time.Sleep(time.Millisecond * 100)
+					continue
+				}
+
+				log.Println(err.Error())
+				break
+			}
+			decoder.Close()
+
+			for _, value := range values {
+				var event message_bus.Event
+
+				rawEvent := value.Interface().(map[string]interface{})
+
+				event.Name = name
+
+				if _, ok := rawEvent["SourceID"]; ok {
+					event.SourceID = rawEvent["SourceID"].(string)
+				}
+
+				if _, ok := rawEvent["Properties"]; ok {
+					rawPropertise := rawEvent["Properties"].(map[string]interface{})
+					// string json to map
+					var properties map[string]string = make(map[string]string)
+					for key, value := range rawPropertise {
+						properties[key] = value.(string)
+					}
+					event.Properties = properties
+				}
+
+				if _, ok := rawEvent["uuid"]; ok {
+					event.Uuid = lo.ToPtr(rawEvent["uuid"].(string))
+				}
+
+				if _, ok := rawEvent["Timestamp"]; ok {
+					rawTimestamp := rawEvent["Timestamp"].(float64)
+					timestamp, cerr := time.Parse(time.RFC3339, fmt.Sprintf("%f", rawTimestamp))
+					if cerr == nil {
+						event.Timestamp = lo.ToPtr(timestamp)
+					}
+				}
+
+				err = MyService.DBService().InsertEvent(*event.Uuid, event.Properties, event.SourceID, event.Name, event.Timestamp)
+				if err != nil {
+					logger.Error("InsertEvent error: ", zap.Error(err))
+				}
 			}
 		}
 	}

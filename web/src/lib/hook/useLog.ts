@@ -73,7 +73,6 @@ const useLog = (level: Ref<string>, logName: Ref<string>) => {
     };
 
     watch([logName, level], () => {
-        console.log('fetching logs');
         fetchLogs();
     }, { immediate: true });
 
