@@ -3,8 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
-	"log"
 
 	"github.com/coreos/go-systemd/sdjournal"
 )
@@ -32,35 +30,40 @@ var (
 
 func (s *LogService) QueryLog(_ context.Context, serviceName string, offset int, length int) ([]string, error) {
 	systemdServiceName, ok := serviceMap[serviceName]
+	logs := []string{}
 	if !ok {
-		return []string{}, ErrServiceNameNotFound
+		return logs, ErrServiceNameNotFound
 	}
 
 	j, err := sdjournal.NewJournal()
 	if err != nil {
-		log.Fatal(err)
+		return logs, err
+
 	}
 	defer j.Close()
 
 	// 添加匹配条件，只查看 smb.service 的日志
 	err = j.AddMatch("_SYSTEMD_UNIT=" + systemdServiceName)
 	if err != nil {
-		log.Fatal(err)
+		return logs, err
+
 	}
 
 	// 从尾部开始读取最近的 10 条日志
 	if err := j.SeekTail(); err != nil {
-		log.Fatal(err)
+		return logs, err
+
 	}
-	if _, err := j.PreviousSkip(10); err != nil {
-		log.Fatal(err)
+	if _, err := j.PreviousSkip(uint64(length)); err != nil {
+		return logs, err
+
 	}
 
 	// 读取并打印日志
 	for {
 		n, err := j.Next()
 		if err != nil {
-			log.Fatal(err)
+			return logs, err
 		}
 		if n == 0 {
 			break
@@ -68,10 +71,10 @@ func (s *LogService) QueryLog(_ context.Context, serviceName string, offset int,
 
 		entry, err := j.GetEntry()
 		if err != nil {
-			log.Fatal(err)
+			return logs, err
 		}
 
-		fmt.Printf("Time:\nMessage: %s\n\n", entry.Fields["MESSAGE"])
+		logs = append(logs, entry.Fields["MESSAGE"])
 	}
-	return []string{}, nil
+	return logs, nil
 }
