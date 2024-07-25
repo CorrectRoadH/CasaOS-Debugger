@@ -3,9 +3,10 @@ package service
 import (
 	"context"
 	"errors"
-	"io/ioutil"
-	"os"
-	"strings"
+	"fmt"
+	"log"
+
+	"github.com/coreos/go-systemd/sdjournal"
 )
 
 type LogService struct{}
@@ -15,10 +16,10 @@ func NewLogService() *LogService {
 }
 
 var serviceMap = map[string]string{
-	"casaos-installer":      "/var/log/casaos/installer.log",
+	"casaos-installer":      "casaos-installer.service",
 	"casaos-app-management": "/var/log/casaos/app-management.log",
 	"zimaos-mod-management": "/var/log/casaos/ZimaOS-ModManagement.log",
-	"zimaos":                "/var/log/casaos/log.log",
+	"zimaos":                "zimaos.service",
 	"zimaos-local-storage":  "/var/log/casaos/local-storage.log",
 	"casaos-gateway":        "/var/log/casaos/gateway.log",
 	"casaos-user-service":   "/var/log/casaos/user-service.log",
@@ -30,45 +31,47 @@ var (
 )
 
 func (s *LogService) QueryLog(_ context.Context, serviceName string, offset int, length int) ([]string, error) {
-	logPath, ok := serviceMap[serviceName]
+	systemdServiceName, ok := serviceMap[serviceName]
 	if !ok {
 		return []string{}, ErrServiceNameNotFound
 	}
 
-	// read file
-	// if file not found, return ErrLogNotFound
-	// if error occurred, return error
-	// if success, return log content
-	openedFile, err := os.Open(logPath)
+	j, err := sdjournal.NewJournal()
 	if err != nil {
-		if os.IsNotExist(err) {
-			return []string{}, ErrLogNotFound
+		log.Fatal(err)
+	}
+	defer j.Close()
+
+	// 添加匹配条件，只查看 smb.service 的日志
+	err = j.AddMatch("_SYSTEMD_UNIT=" + systemdServiceName)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 从尾部开始读取最近的 10 条日志
+	if err := j.SeekTail(); err != nil {
+		log.Fatal(err)
+	}
+	if _, err := j.PreviousSkip(10); err != nil {
+		log.Fatal(err)
+	}
+
+	// 读取并打印日志
+	for {
+		n, err := j.Next()
+		if err != nil {
+			log.Fatal(err)
 		}
-		return []string{}, err
-	}
-	defer openedFile.Close()
+		if n == 0 {
+			break
+		}
 
-	// Read the file content
-	content, err := ioutil.ReadAll(openedFile)
-	if err != nil {
-		return []string{}, err
-	}
+		entry, err := j.GetEntry()
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	// spill the content into lines
-	lines := strings.Split(string(content), "\n")
-
-	// check offset and length
-	if offset < 0 {
-		offset = 0
+		fmt.Printf("Time: %s\nMessage: %s\n\n", entry.RealtimeTimestamp, entry.Fields["MESSAGE"])
 	}
-	if length < 0 {
-		length = 0
-	}
-	if offset >= len(lines) {
-		return []string{}, nil
-	}
-	if offset+length >= len(lines) {
-		return lines[offset:], nil
-	}
-	return lines[offset : offset+length], nil
+	return []string{}, nil
 }
