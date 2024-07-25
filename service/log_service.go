@@ -21,7 +21,7 @@ var serviceMap = map[string]string{
 	"zimaos-mod-management": "/var/log/casaos/ZimaOS-ModManagement.log",
 	"zimaos":                "zimaos.service",
 	"zimaos-local-storage":  "/var/log/casaos/local-storage.log",
-	"casaos-gateway":        "/var/log/casaos/gateway.log",
+	"casaos-gateway":        "casaos-gateway.service",
 	"casaos-user-service":   "/var/log/casaos/user-service.log",
 }
 
@@ -71,7 +71,7 @@ func (s *LogService) QueryLog(_ context.Context, serviceName string, offset int,
 			log.Fatal(err)
 		}
 
-		fmt.Printf("Time: %s\nMessage: %s\n\n", entry.RealtimeTimestamp, entry.Fields["MESSAGE"])
+		fmt.Printf("Time:\nMessage: %s\n\n", entry.Fields["MESSAGE"])
 	}
 	return []string{}, nil
 }
